@@ -5,7 +5,6 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.common.errors.WakeupException;
-import org.apache.kafka.common.protocol.types.Field;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,13 +20,13 @@ public class ConsumerDemoWithThread {
     new ConsumerDemoWithThread().run();
   }
 
-  private ConsumerDemoWithThread(){
+  private ConsumerDemoWithThread() {
 
   }
-  public void run(){
+  private void run(){
     Logger logger = LoggerFactory.getLogger(ConsumerDemoWithThread.class.getName());
 
-    String bootstrapServers = "3.106.131.218:9092";
+    String bootstrapServers = "3.25.105.80:9092";
     String groupId = "my-sixth-application";
     String topic = "first_topic";
 
@@ -49,8 +48,8 @@ public class ConsumerDemoWithThread {
 
     // add a shutdown hook
     Runtime.getRuntime().addShutdownHook(new Thread( () -> {
-      logger.info("Caught shutdown hook");
-      ((ConsumerRunnable) myConsumerRunnable).shutdown();
+          logger.info("Caught shutdown hook");
+          ((ConsumerRunnable) myConsumerRunnable).shutdown();
       try {
         latch.await();
       } catch (InterruptedException e) {
@@ -58,13 +57,13 @@ public class ConsumerDemoWithThread {
       }
       logger.info("Application has exited");
     }
-      ));
+    ));
 
     try {
       latch.await();
     } catch (InterruptedException e) {
       logger.error("Application got interrupted", e);
-    } finally {
+    } finally{
       logger.info("Application is closing");
     }
   }
@@ -72,13 +71,13 @@ public class ConsumerDemoWithThread {
   public class ConsumerRunnable implements Runnable {
 
     private CountDownLatch latch;
-    private KafkaConsumer<String, String> consumer;
-    private Logger logger = LoggerFactory.getLogger(ConsumerThread.class.getName());
+    private KafkaConsumer<String,String> consumer;
+    private Logger logger = LoggerFactory.getLogger(ConsumerRunnable.class.getName());
 
-    public ConsumerThread(String bootstrapServers,
+    public ConsumerRunnable(String bootstrapServers,
                           String groupId,
                           String topic,
-                          CountDownLatch latch) {
+                          CountDownLatch latch ) {
       this.latch = latch;
 
       // create consumer configs
@@ -90,38 +89,38 @@ public class ConsumerDemoWithThread {
       properties.setProperty(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG,"earliest");
 
       // create consumer
-      consumer = new KafkaConsumer<String, String>(properties);
-
+      consumer = new KafkaConsumer<String, String> (properties);
       // subscribe consumer to our topic(s)
       consumer.subscribe(Arrays.asList(topic));
     }
-
     @Override
     public void run() {
       // poll for new data
       try {
         while (true) {
           ConsumerRecords<String, String> records =
-              consumer.poll(Duration.ofMillis(100)); // new in Kafka 2.0.0
+                  consumer.poll(Duration.ofMillis(100)); // new in Kafka 2.0.0
 
-          for (ConsumerRecord<String, String> record : records) {
+          for (ConsumerRecord<String, String> record : records){
             logger.info("Key: " + record.key() + ", Value: " + record.value());
             logger.info("Partition: " + record.partition() + ", Offset:" + record.offset());
+
           }
         }
       } catch (WakeupException e) {
         logger.info("Received shutdown signal!");
-      } finally {
+      } finally{
         consumer.close();
-        // tell our main code we are done with the consumer
+        // tell main code that we're done with the consumer
         latch.countDown();
       }
     }
 
-    public void shutdown() {
-      // the wakeup() method is a special method to interrupt consumer.poll()
-      // it wil throw the exception WakeUpException
+    public void shutdown(){
+      // the wakeup method is a special method to interrupt consumer.poll()
+      // it will throw the exception WakeUpException
       consumer.wakeup();
+
     }
   }
 }
