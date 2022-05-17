@@ -10,6 +10,7 @@
 
     <properties>
         <slf4j.version>1.7.30</slf4j.version>
+        <twitter.version>2.2.0</twitter.version>
         <maven.compiler.source>18</maven.compiler.source>
         <maven.compiler.target>18</maven.compiler.target>
     </properties>
@@ -33,6 +34,14 @@
             <artifactId>slf4j-simple</artifactId>
             <version>${slf4j.version}</version>
         </dependency>
+
+        <!--twitter dependency-->
+            <dependency>
+                <groupId>com.twitter</groupId>
+                <artifactId>hbc-core</artifactId> <!-- or hbc-twitter4j -->
+                <version>2.2.0</version> <!-- or whatever the latest version is -->
+            </dependency>
+
     </dependencies>
 
 
