@@ -1,12 +1,15 @@
-package com.github.scottaabbott.kafka.tutorial1;
-
-import org.apache.kafka.clients.producer.*;
-import org.apache.kafka.common.serialization.StringSerializer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+package kafka.tutorial1;
 
 import java.util.Properties;
 import java.util.concurrent.ExecutionException;
+import org.apache.kafka.clients.producer.Callback;
+import org.apache.kafka.clients.producer.KafkaProducer;
+import org.apache.kafka.clients.producer.ProducerConfig;
+import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.clients.producer.RecordMetadata;
+import org.apache.kafka.common.serialization.StringSerializer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ProducerDemoKeys {
     public static void main(String[] args) throws ExecutionException, InterruptedException {
